@@ -86,6 +86,9 @@ WAV, WAV back to photo). The server allows exactly those two extra
 paths and nothing else. The DSP stays in JavaScript; the generated
 Rust only calls the bridge and shows a plain message if it did not load.
 
+v1.0.4 note: app-only fix (Swift compile error in the block
+editor); the server is unchanged from v1.0.3.
+
 v1.0.3 note: `scripts/run-server.ps1` used to look for this file
 inside `scripts\` and failed with "can't open file". It now changes
 to the `kidbuilder\` folder first. If you already have v1.0.2

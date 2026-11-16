@@ -576,8 +576,8 @@ struct BlockEditorView: View {
 
     var body: some View {
         Form {
-            if let block {
-                switch block {
+            if let currentBlock = block {
+                switch currentBlock {
                 case .title(let text):
                     Section("Title") {
                         TextField("Title", text: binding(text, { .title(text: $0) }))

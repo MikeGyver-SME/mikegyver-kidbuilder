@@ -1,4 +1,4 @@
-# Kid Builder v1.0.3 - iOS app
+# Kid Builder v1.0.4 - iOS app
 
 Stack blocks, tap **Build & Deploy**, and a real Rust Yew/WASM site
 goes live on your Hostek FTP host - built by Colin (8) and Luan (8),
@@ -201,6 +201,21 @@ never show invented code or a fake success.
 
 ## Changelog
 
+- **v1.0.4** - Fixes the first real Xcode compile failure: the
+  v1.0.3 tag pushed fine but the archive failed with one Swift
+  error, `ContentView.swift:622: cannot assign to value: 'block'
+  is a 'let' constant`. The block editor's `if let block {` made a
+  local constant that shadowed the `@State` property of the same
+  name, so the five pickers/steppers that write the edited block
+  back (button action, piano note, quiz answers, quiz correct
+  answer, timer) all tried to assign to the constant. The `if let`
+  now binds `currentBlock`, so those setters write to the `@State`
+  property as intended. Also removes the duplicate 1024x1024 entry
+  in the AppIcon set (the same file was listed as both
+  `ios-marketing` and `universal`, which actool warned about as an
+  unassigned child). v1.0.3 DID reach the workflow and fail there,
+  so this one needs a fresh push and tag - build 5. Version
+  1.0.4 / build 5.
 - **v1.0.3** - Fixes `run-server.ps1`: it used to `Set-Location
   $PSScriptRoot` (the `scripts\` folder) and then run
   `python kidbuilder-server.py`, but the server file lives one level

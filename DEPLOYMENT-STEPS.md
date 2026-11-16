@@ -1,4 +1,4 @@
-# Kid Builder - deployment steps (v1.0.3)
+# Kid Builder - deployment steps (v1.0.4)
 
 Same proven pipeline as YewBuilder / SSTV Studio / PodMix / Voyager
 Light-Day. Do each step once, in order. Nothing here needs the Mac -
@@ -6,12 +6,12 @@ the build runs on GitHub Actions and lands in TestFlight.
 
 ## 0. What is in the zip (so nothing looks missing)
 
-Extract `kidbuilder-v1.0.3.zip` to `E:\Downloads` (the default). You
-get one folder, `kidbuilder-v1.0.3\kidbuilder\`, with everything in it:
+Extract `kidbuilder-v1.0.4.zip` to `E:\Downloads` (the default). You
+get one folder, `kidbuilder-v1.0.4\kidbuilder\`, with everything in it:
 
 - `KidBuilder/` - the iPhone app (SwiftUI, 5 tabs, camera block,
   "See my code" tab, Build & Deploy with on-phone FTP)
-- `KidBuilder.xcodeproj/` - the Xcode project (v1.0.3 / build 4)
+- `KidBuilder.xcodeproj/` - the Xcode project (v1.0.4 / build 4)
 - `kidbuilder_gen.py` - THE GENERATOR: turns tap blocks into the 5
   Yew files (index.html, styles.css, Cargo.toml, Trunk.toml,
   src/main.rs). Run `python3 kidbuilder_gen.py` to regenerate.
@@ -67,7 +67,7 @@ two separate systems that happen to share a PC and a toolchain:
 | | YewBuilder | Kid Builder |
 | --- | --- | --- |
 | iPhone app | YewBuilder | Kid Builder |
-| Server folder | `E:\Downloads\yewbuilder-v1.0.5\yewbuilder\server\` | `E:\Downloads\kidbuilder-v1.0.3\kidbuilder\` |
+| Server folder | `E:\Downloads\yewbuilder-v1.0.5\yewbuilder\server\` | `E:\Downloads\kidbuilder-v1.0.4\kidbuilder\` |
 | Server file | `server.py` | `kidbuilder-server.py` |
 | Port | **8080** | **8081** |
 | Starts by | "YewBuilder server" scheduled task, at sign-in | By hand with `run-server.ps1`, when the kids build |
@@ -112,11 +112,11 @@ The workflow fails without these, even with everything else in place.
 ## 3. Push + tag (PowerShell on Windows)
 
 ```powershell
-# Extract kidbuilder-v1.0.3.zip first (E:\Downloads is the default).
+# Extract kidbuilder-v1.0.4.zip first (E:\Downloads is the default).
 # The zip has an inner kidbuilder\ folder, so step into it first:
-Set-Location E:\Downloads\kidbuilder-v1.0.3\kidbuilder
+Set-Location E:\Downloads\kidbuilder-v1.0.4\kidbuilder
 powershell -ExecutionPolicy Bypass -File .\scripts\push-kidbuilder.ps1
-# uses defaults, tags v1.0.3
+# uses defaults, tags v1.0.4
 ```
 
 The tag push starts the "Build and upload KidBuilder to TestFlight"
@@ -146,7 +146,7 @@ as it does today, and YewBuilder keeps using it.
 
 1. In the extracted `kidbuilder` folder:
    ```powershell
-   Set-Location E:\Downloads\kidbuilder-v1.0.3\kidbuilder
+   Set-Location E:\Downloads\kidbuilder-v1.0.4\kidbuilder
    powershell -ExecutionPolicy Bypass -File .\scripts\run-server.ps1
    ```
    It checks Python, cargo and trunk, then prints
@@ -155,15 +155,15 @@ as it does today, and YewBuilder keeps using it.
    Python is already allowed through Windows Firewall from YewBuilder,
    so there is usually no new prompt.
    Before you run it, check you are in the right folder: PowerShell
-   should show `PS E:\Downloads\kidbuilder-v1.0.3\kidbuilder>`. If it
+   should show `PS E:\Downloads\kidbuilder-v1.0.4\kidbuilder>`. If it
    shows `kidbuilder-v1.0.1` or `kidbuilder-v1.0.2`, you are about to
-   run the old script - `Set-Location` to the v1.0.3 folder first.
+   run the old script - `Set-Location` to the v1.0.4 folder first.
    (v1.0.3 also fixes the script itself: it used to look for the
    server file inside `scripts\`, where it does not live.)
 2. Check both servers are up, in two windows: the YewBuilder window
    says port 8080, the Kid Builder window says port 8081. If you ever
    see two windows both claiming 8080, one of them is the old v1.0.1
-   server - stop it and use v1.0.3.
+   server - stop it and use v1.0.4.
 3. If you want the Kid Builder server to start at sign-in too, make a
    SEPARATE scheduled task ("KidBuilder server", pointing at this
    folder's `scripts\run-server.ps1`). Never edit the "YewBuilder
@@ -211,10 +211,10 @@ check the builder address in Settings and that the PC is on.
   v1.0.3 copy, or extract the v1.0.3 zip. Also check the banner: if
   it says port 8080 or the path names v1.0.1, PowerShell is sitting
   in an old extract, not the folder you think - run `Get-Location`.
-- `Source folder not found: ...\kidbuilder-v1.0.3\kidbuilder` - you
+- `Source folder not found: ...\kidbuilder-v1.0.4\kidbuilder` - you
   extracted an old v1.0.0 zip (no inner folder) or extracted to the
-  wrong place. Use `kidbuilder-v1.0.3.zip` and check the path exists.
-- `Tag v1.0.3 already exists` - the tag was already pushed. Check the
+  wrong place. Use `kidbuilder-v1.0.4.zip` and check the path exists.
+- `Tag v1.0.4 already exists` - the tag was already pushed. Check the
   Actions tab: if that run is green, the build is already on its way.
 - Workflow run missing or stale - push to main alone does not start
   this workflow; only a `v*` tag push does. Tag by hand only after
@@ -224,10 +224,10 @@ check the builder address in Settings and that the PC is on.
 - `sstv-core.js not found` from the server - fixed in v1.0.1: the
   generator now falls back to the shipped copy in
   `projects/photo-to-space-sound/`. If you still see it, you are
-  running the old server file - replace it with the v1.0.3 one.
+  running the old server file - replace it with the v1.0.4 one.
 - Two server windows both on 8080, or Kid Builder's Test builder
   connection answers on 8080 - you are running the old v1.0.1 server.
-  Stop it; v1.0.3 listens on 8081 and the YewBuilder server keeps 8080.
+  Stop it; v1.0.4 listens on 8081 and the YewBuilder server keeps 8080.
 - Distribution certificate limit in the workflow log - revoke only
   ONE old distribution certificate in the portal, then re-run the
   workflow with no code change.
