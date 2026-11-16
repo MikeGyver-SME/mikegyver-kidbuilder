@@ -4,7 +4,7 @@
   TestFlight build workflow).
 
 .DESCRIPTION
-  1. Uses the extracted kidbuilder-v1.0.1\kidbuilder folder as the source of truth.
+  1. Uses the extracted kidbuilder-v1.0.3\kidbuilder folder as the source of truth.
   2. Clones MikeGyver-SME/mikegyver-kidbuilder if needed (else pulls main).
   3. Copies the source in, commits, pushes.
   4. Creates and pushes the version tag -> the "Build and upload KidBuilder to
@@ -15,7 +15,7 @@
   (with ITSAppUsesNonExemptEncryption = NO).
 
 .PARAMETER SourceDir
-  The extracted source folder. Defaults to E:\Downloads when it exists, else your shell Downloads folder\kidbuilder-v1.0.1\kidbuilder
+  The extracted source folder. Defaults to E:\Downloads when it exists, else your shell Downloads folder\kidbuilder-v1.0.3\kidbuilder
   (resolved via the Windows shell, so relocated Downloads folders work).
 
 .PARAMETER RepoDir
@@ -23,27 +23,27 @@
   user profile.
 
 .PARAMETER Tag
-  Version tag to create and push, e.g. v1.0.1. The workflow runs on tags
+  Version tag to create and push, e.g. v1.0.3. The workflow runs on tags
   matching v*.
 
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File .\push-kidbuilder.ps1
-  # uses defaults, tags v1.0.1
+  # uses defaults, tags v1.0.3
 
 .EXAMPLE
-  powershell -ExecutionPolicy Bypass -File .\push-kidbuilder.ps1 -Tag v1.0.1
+  powershell -ExecutionPolicy Bypass -File .\push-kidbuilder.ps1 -Tag v1.0.3
 #>
 param(
-    [string]$SourceDir = (Join-Path (& { if (Test-Path 'E:\Downloads') { 'E:\Downloads' } else { try { (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path } catch { "$env:USERPROFILE\Downloads" } } }) 'kidbuilder-v1.0.1\kidbuilder'),
+    [string]$SourceDir = (Join-Path (& { if (Test-Path 'E:\Downloads') { 'E:\Downloads' } else { try { (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path } catch { "$env:USERPROFILE\Downloads" } } }) 'kidbuilder-v1.0.3\kidbuilder'),
     [string]$RepoDir   = (Join-Path $env:USERPROFILE 'source\repos\mikegyver-kidbuilder'),
-    [string]$Tag       = 'v1.0.1'
+    [string]$Tag       = 'v1.0.3'
 )
 
 $ErrorActionPreference = 'Stop'
 $RepoSlug = 'MikeGyver-SME/mikegyver-kidbuilder'
 
 if (-not (Test-Path $SourceDir)) {
-    throw "Source folder not found: $SourceDir`nExtract kidbuilder-v1.0.1.zip first."
+    throw "Source folder not found: $SourceDir`nExtract kidbuilder-v1.0.3.zip first."
 }
 
 # --- 1. Clone or update ------------------------------------------------------

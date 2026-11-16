@@ -324,7 +324,7 @@ struct ContentView: View {
         NavigationStack {
             Form {
                 Section("Builder server") {
-                    TextField("http://192.168.1.10:8080", text: $store.builderURL)
+                    TextField("http://192.168.1.10:8081", text: $store.builderURL)
                         .autocapitalization(.none)
                         .disableAutocorrection(true)
                         .keyboardType(.URL)

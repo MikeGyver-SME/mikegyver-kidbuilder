@@ -2,9 +2,13 @@
 """
 Kid Builder builder server - stdlib only, no pip packages.
 
-This is the YewBuilder builder server (server.py) extended with block
-endpoints for the Kid Builder iOS app. The /health and /build endpoints
-are unchanged, so YewBuilder keeps working against this server.
+A SEPARATE builder server for the Kid Builder iOS app. It runs on its
+own port, 8081, ALONGSIDE the YewBuilder server on port 8080 - it does
+not replace it, and YewBuilder never talks to it. The YewBuilder
+server, its scheduled task, and its folder are left completely alone.
+This server has the same shape as YewBuilder's (GET /health, POST
+/build for 5 source files) plus two block endpoints, /generate-blocks
+and /build-blocks, for Kid Builder.
 
 What it does
 ------------
@@ -27,8 +31,8 @@ Windows (PowerShell), in this folder - needs Rust + trunk first:
   PS> rustup target add wasm32-unknown-unknown
   PS> cargo install trunk
   PS> python kidbuilder-server.py
-  # listens on http://0.0.0.0:8080 - put that machine's LAN IP in the
-  # iPhone app Settings, e.g. http://192.168.1.10:8080
+  # listens on http://0.0.0.0:8081 - put that machine's LAN IP in the
+  # iPhone app Settings, e.g. http://192.168.1.10:8081
 
 API
 ---
@@ -328,7 +332,7 @@ class QuietServer(ThreadingHTTPServer):
 
 
 def main():
-    port = int(os.environ.get("PORT", "8080"))
+    port = int(os.environ.get("PORT", "8081"))
     if len(sys.argv) > 1:
         port = int(sys.argv[1])
     print(f"KidBuilder server on http://0.0.0.0:{port}  (trunk: {tool_version(['trunk', '--version'])})")

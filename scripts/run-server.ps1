@@ -4,17 +4,20 @@
 
 .DESCRIPTION
   Checks Python + Rust + the wasm32 target + trunk are installed, then
-  runs kidbuilder-server.py on port 8080. Put this machine's LAN IP in
-  the iPhone app Settings as the builder URL, e.g.
-  http://192.168.1.10:8080 - or its Tailscale IP when away from home.
+  runs kidbuilder-server.py on port 8081. Put this machine's LAN IP in
+  the Kid Builder iPhone app Settings as the builder URL, e.g.
+  http://192.168.1.10:8081 - or its Tailscale IP when away from home.
 
-  This server REPLACES the YewBuilder server (server.py) on this PC:
-  it keeps the same /health and /build endpoints, so YewBuilder keeps
-  working, and adds /generate-blocks and /build-blocks for Kid Builder.
-  Do not run both servers at once - they both use port 8080. Stop the
-  old YewBuilder server (or its scheduled task) first, then start this
-  one. To go back to YewBuilder only, stop this server and restart
-  server.py from the YewBuilder folder.
+  This server runs ALONGSIDE the YewBuilder server, on its own port
+  (8081 vs YewBuilder's 8080), from its own folder. It does NOT replace
+  the YewBuilder server and does NOT touch it: do not stop the
+  "YewBuilder server" scheduled task, do not change it, and do not
+  point anything YewBuilder at this port. YewBuilder keeps working
+  exactly as it does today, on 8080, whether this server is running
+  or not - and Kid Builder works whether the YewBuilder server is
+  running or not. The two servers share nothing: different folders,
+  different ports, different apps. Stopping one cannot affect the
+  other.
 
   First-time setup (one-off, PowerShell):
     winget install Rustlang.Rustup
@@ -31,10 +34,10 @@
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File .\run-server.ps1
 .EXAMPLE
-  powershell -ExecutionPolicy Bypass -File .\run-server.ps1 -Port 8080
+  powershell -ExecutionPolicy Bypass -File .\run-server.ps1 -Port 8081
 #>
 param(
-    [int]$Port = 8080
+    [int]$Port = 8081
 )
 
 $ErrorActionPreference = 'Stop'
@@ -53,5 +56,17 @@ Write-Host "Kid Builder server - $cargoVersion / $trunkVersion" -ForegroundColor
 Write-Host "Listening on http://0.0.0.0:$Port - iPhone Settings > Builder server: http://<this-PC-LAN-IP>:$Port" -ForegroundColor Cyan
 Write-Host "Press Ctrl+C to stop." -ForegroundColor DarkGray
 
-Set-Location $PSScriptRoot
+# This script lives in scripts\, but kidbuilder-server.py lives one level
+# up, in the kidbuilder\ folder. Run from there - NOT from $PSScriptRoot
+# (the scripts\ folder), or Python looks for the server file in scripts\
+# and fails with "can't open file '...\scripts\kidbuilder-server.py'".
+# (That exact bug shipped in v1.0.1 and v1.0.2: the YewBuilder script
+# this was copied from sits BESIDE server.py, so $PSScriptRoot was
+# right for it and wrong here.)
+$ServerDir = Split-Path $PSScriptRoot -Parent
+$ServerFile = Join-Path $ServerDir 'kidbuilder-server.py'
+if (-not (Test-Path $ServerFile)) {
+    throw "kidbuilder-server.py not found at $ServerFile`nRun this script from the extracted kidbuilder folder (E:\Downloads\kidbuilder-vX.Y.Z\kidbuilder)."
+}
+Set-Location $ServerDir
 python kidbuilder-server.py $Port

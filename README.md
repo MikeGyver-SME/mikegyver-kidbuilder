@@ -1,4 +1,4 @@
-# Kid Builder v1.0.1 - iOS app
+# Kid Builder v1.0.3 - iOS app
 
 Stack blocks, tap **Build & Deploy**, and a real Rust Yew/WASM site
 goes live on your Hostek FTP host - built by Colin (8) and Luan (8),
@@ -113,11 +113,16 @@ on the phone, the first time.
 
 The builder server ships in this zip: `kidbuilder-server.py` +
 `kidbuilder_gen.py` + `projects/` (the five generated starters) +
-`scripts/run-server.ps1`. It replaces the YewBuilder server on the
-same PC - it keeps `/health` and `/build`, so YewBuilder keeps
-working, and adds `/generate-blocks` and `/build-blocks`. Do not run
-both servers at once (both use port 8080): stop the old YewBuilder
-server first.
+`scripts/run-server.ps1`.
+
+It runs ALONGSIDE the YewBuilder server, on its own port: Kid Builder
+on **8081**, YewBuilder on **8080**. It does not replace YewBuilder
+and does not touch it - do not stop the "YewBuilder server" scheduled
+task, do not change it, and do not point anything YewBuilder at port
+8081. YewBuilder keeps working exactly as it does today, whether the
+Kid Builder server is running or not, and Kid Builder works whether
+the YewBuilder server is running or not. Different folders, different
+ports, different apps - stopping one cannot affect the other.
 
 In the extracted `kidbuilder` folder, run (PowerShell):
 
@@ -125,13 +130,19 @@ In the extracted `kidbuilder` folder, run (PowerShell):
 powershell -ExecutionPolicy Bypass -File .\scripts\run-server.ps1
 ```
 
-It checks Python, cargo and trunk, then listens on port 8080. In the
-iPhone app: Settings -> Builder server ->
-`http://<this-PC-LAN-IP>:8080` (find the IP with `ipconfig`, e.g.
-`http://192.168.1.10:8080`), or the PC's Tailscale IP
-(`http://100.x.x.x:8080`) when away from home. Tap **Test builder
-connection** - it should report the trunk version. Windows Firewall
-will ask the first time: allow Python on private networks.
+It checks Python, cargo and trunk, then listens on port 8081. In the
+Kid Builder iPhone app: Settings -> Builder server ->
+`http://<this-PC-LAN-IP>:8081` (find the IP with `ipconfig`, e.g.
+`http://192.168.1.10:8081`), or the PC's Tailscale IP
+(`http://100.x.x.x:8081`) when away from home. Tap **Test builder
+connection** - it should report the trunk version. Python is already
+allowed through Windows Firewall from YewBuilder, so there is
+usually no new prompt.
+
+If you want the Kid Builder server to start at sign-in too, make a
+SEPARATE scheduled task for it ("KidBuilder server", pointing at this
+folder's `scripts\run-server.ps1`). Never edit the "YewBuilder
+server" task to do it.
 
 ## Files
 
@@ -190,6 +201,23 @@ never show invented code or a fake success.
 
 ## Changelog
 
+- **v1.0.3** - Fixes `run-server.ps1`: it used to `Set-Location
+  $PSScriptRoot` (the `scripts\` folder) and then run
+  `python kidbuilder-server.py`, but the server file lives one level
+  up, so Python failed with "can't open file
+  '...\scripts\kidbuilder-server.py'". It now changes to the parent
+  folder first and throws a clear message if the server file is not
+  there. No app code changed; the bump keeps zip, tag, and app
+  version in sync. If you already pushed v1.0.2 to TestFlight, do
+  NOT re-push for this - just replace the one `run-server.ps1` file
+  on the PC, since the app bundle does not contain it. Version
+  1.0.3 / build 4.
+- **v1.0.2** - The Kid Builder server moves to its own port, 8081.
+  YewBuilder stays on 8080, untouched: its server, its scheduled
+  task, and its folder are not stopped, changed, or pointed at
+  anything new. The v1.0.1 "swap from YewBuilder" instruction was
+  wrong and is withdrawn. Also fixes the Settings placeholder to
+  show an 8081 example address. Version 1.0.2 / build 3.
 - **v1.0.1** - Fixes the two v1.0.0 packaging bugs: the zip now has
   the inner `kidbuilder/` folder the push script expects (v1.0.0 had
   its files at the zip root, so the script threw "Source folder not
