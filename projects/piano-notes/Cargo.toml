@@ -1,0 +1,40 @@
+[package]
+name = "piano-notes"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+yew = { version = "0.21", features = ["csr"] }
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+gloo-timers = "0.3"
+js-sys = "0.3"
+web-sys = { version = "0.3", features = [
+  "Window",
+  "Document",
+  "Element",
+  "HtmlElement",
+  "HtmlInputElement",
+  "HtmlCanvasElement",
+  "CanvasRenderingContext2d",
+  "HtmlImageElement",
+  "HtmlAnchorElement",
+  "Blob",
+  "BlobPropertyBag",
+  "Url",
+  "File",
+  "FileList",
+  "Event",
+  "MouseEvent",
+  "AudioContext",
+  "BaseAudioContext",
+  "OscillatorNode",
+  "GainNode",
+  "AudioParam",
+  "OscillatorType",
+  "AudioDestinationNode",
+  "AudioNode",
+] }
+
+[profile.release]
+opt-level = 2
