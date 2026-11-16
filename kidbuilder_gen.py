@@ -515,7 +515,7 @@ def embedded_photo(blocks):
 # ---------------------------------------------------------------------------
 
 RUST_HEADER = """use gloo_timers::callback::Interval;
-use js_sys::JsValue;
+use wasm_bindgen::JsValue;
 use std::cell::RefCell;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
