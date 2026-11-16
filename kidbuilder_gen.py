@@ -801,10 +801,10 @@ def generate_main_rs(name, blocks):
             let (_, _, correct) = QUIZ[*quiz_idx];
             if choice == correct {
                 quiz_score.set(*quiz_score + 1);
-                quiz_feedback.set(Some("Right! That makes a square number.".to_string()));
+                quiz_feedback.set(Some("Right! Well done.".to_string()));
                 quiz_answered.set(true);
             } else {
-                quiz_feedback.set(Some("Not quite - count the stars and try again.".to_string()));
+                quiz_feedback.set(Some("Not quite - try again.".to_string()));
             }
         })
     };
