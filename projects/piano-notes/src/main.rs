@@ -144,7 +144,7 @@ fn app() -> Html {
         <p class="msg">{ (*last_note).clone().map(|n| format!("Last note: {}", n)).unwrap_or_default() }</p>
         <button onclick={{
             let audio = audio.clone();
-            Callback::from(move |_| {
+            Callback::from(move |_: web_sys::MouseEvent| {
                 play_tone(&audio, 261.63, 0.5);
                 play_tone(&audio, 329.63, 0.5);
                 play_tone(&audio, 392.00, 0.5);

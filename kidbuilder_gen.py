@@ -1155,7 +1155,7 @@ def generate_main_rs(name, blocks):
                 html.append(
                     """        <button onclick={{
             let audio = audio.clone();
-            Callback::from(move |_| {
+            Callback::from(move |_: web_sys::MouseEvent| {
                 play_tone(&audio, 261.63, 0.5);
                 play_tone(&audio, 329.63, 0.5);
                 play_tone(&audio, 392.00, 0.5);
