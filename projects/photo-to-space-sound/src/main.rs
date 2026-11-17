@@ -194,7 +194,7 @@ fn app() -> Html {
 
     let on_download_photo = {
         let photo_url = photo_url.clone();
-        Callback::from(move |_| {
+        Callback::from(move |_: web_sys::MouseEvent| {
             if let Some(url) = (*photo_url).clone() {
                 download_url(&url, "my-photo.png");
             }
